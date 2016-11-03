@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+var oauthUrl string = `https://aws-lab.datafoundry.cn/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Fweb-demo.chaizs.app.dataos.io%2Fcallback&scope=user%3Ainfo%20user%3Acheck-access%20user%3Alist-projects&client_id=oauth-test`
+
 func httpsrv() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
@@ -19,6 +21,13 @@ func httpsrv() {
 		resp, _ := json.MarshalIndent(r.Header, "", "  ")
 		fmt.Fprintf(w, string(resp))
 	})
+
+	http.HandleFunc("/signin", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
+		http.Redirect(w, r, oauthUrl, http.StatusFound)
+	})
+
+	//https://aws-lab.datafoundry.cn/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Fweb-demo.chaizs.app.dataos.io%2Fcallback&scope=user%3Ainfo%20user%3Acheck-access%20user%3Alist-projects&client_id=oauth-test
 
 	log.Println("Listening on 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
