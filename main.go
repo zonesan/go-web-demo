@@ -13,7 +13,7 @@ import (
 
 var oauthUrl string = `https://aws-lab.datafoundry.cn/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Fweb-demo.chaizs.app.dataos.io%2Fcallback&scope=user%3Ainfo%20user%3Acheck-access%20user%3Alist-projects&client_id=oauth-test`
 
-func httpsrv() {
+func httpsrv(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
 		r.Header["CLIENT-INFO"] = []string{r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto}
@@ -29,13 +29,18 @@ func httpsrv() {
 
 	//https://aws-lab.datafoundry.cn/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Fweb-demo.chaizs.app.dataos.io%2Fcallback&scope=user%3Ainfo%20user%3Acheck-access%20user%3Alist-projects&client_id=oauth-test
 
-	log.Println("Listening on 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Listening on", port)
+	log.Fatal(http.ListenAndServe(port, nil))
 }
 
 func main() {
 
-	go httpsrv()
+	port := ":" + os.Getenv("BINDING_PORT")
+	fmt.Println("ENV BINDING_PORT ", port)
+	if port == ":" {
+		port = ":8080"
+	}
+	go httpsrv(port)
 
 	getenvironment := func(data []string, getkeyval func(item string) (key, val string)) map[string]string {
 		items := make(map[string]string)
