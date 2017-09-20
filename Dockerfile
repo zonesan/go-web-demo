@@ -1,6 +1,6 @@
 FROM alpine
 
-EXPOSE 10000-50000
+EXPOSE 8080
 
 ADD go-web-demo /
 RUN chmod +x /go-web-demo && \
