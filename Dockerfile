@@ -1,9 +1,11 @@
-FROM alpine
+FROM golang
 
 EXPOSE 8080
 
-ADD go-web-demo /
-RUN chmod +x /go-web-demo && \
-    mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 
+ADD main.go $GOPATH/src/github.com/zonesan/go-web-demo/
 
-CMD ["/go-web-demo"]
+WORKDIR $GOPATH/src/github.com/zonesan/go-web-demo
+
+RUN go build
+
+CMD ["./go-web-demo"]
