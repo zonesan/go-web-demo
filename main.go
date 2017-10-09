@@ -17,6 +17,7 @@ func httpsrv(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
 		r.Header["CLIENT-INFO"] = []string{r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto}
+		r.Header["Version"] = []string{"v1"}
 		fmt.Printf("%#v", r.Header)
 		resp, _ := json.MarshalIndent(r.Header, "", "  ")
 		fmt.Fprintf(w, string(resp))
